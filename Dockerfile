@@ -21,6 +21,7 @@ RUN cd /emsdk && ./emsdk install latest && ./emsdk activate latest
 COPY . /macemu
 SHELL ["/bin/bash", "-c"]
 RUN source /emsdk/emsdk_env.sh \
+    && export EMSCRIPTEN=/emsdk/fastcomp/emscripten \
     && emcc --version \
     && cd /macemu/BasiliskII/src/Unix \
     && /macemu/BasiliskII/src/Unix/_embuild.sh \
