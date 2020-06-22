@@ -3,13 +3,13 @@ FROM ubuntu:xenial
 RUN DEBIAN_FRONTEND=noninteractive apt-get -y update
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -y git libsdl1.2-dev autoconf libgtk2.0-dev libxxf86dga-dev libxxf86vm-dev libesd0-dev xserver-xorg-core xserver-xorg-input-all xserver-xorg-video-fbdev
 
-RUN git clone -b 1.38.48 --depth=1 https://github.com/emscripten-core/emsdk.git emsdk
-RUN cd /emsdk && ./emsdk install latest && ./emsdk activate latest
+RUN git clone --depth=1 https://github.com/emscripten-core/emsdk.git emsdk
+RUN cd /emsdk && ./emsdk install sdk-fastcomp-1.37.40-64bit && ./emsdk activate sdk-fastcomp-1.37.40-64bit
 
 COPY . /macemu
 SHELL ["/bin/bash", "-c"]
 RUN source /emsdk/emsdk_env.sh \
-    && export EMSCRIPTEN=/emsdk/fastcomp/emscripten \
+    && export EMSCRIPTEN=/emsdk/emscripten/1.37.40 \
     && emcc --version \
     && cd /macemu/BasiliskII/src/Unix \
     && /macemu/BasiliskII/src/Unix/_embuild.sh \
@@ -22,4 +22,4 @@ RUN useradd -r -u 1000 -g basiliskii basiliskii
 
 USER basiliskii
 
-ENTRYPOINT ["/usr/local/bin/BasiliskII"]
+CMD "cd /macemu/BasiliskII/src/Unix && python -m SimpleHTTPServer 8000"
